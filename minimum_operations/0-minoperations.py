@@ -1,9 +1,12 @@
 #!/usr/bin/python3
-"""Module to calculate the fewest operations needed to result in n characters."""
+"""Module to calculate the fewest operations
+needed to result in n characters.
+"""
 
 
 def minOperations(n):
-    """Calculate the fewest number of operations to reach exactly n 'H' characters.
+    """Calculate the fewest number of operations
+    to reach exactly n 'H' characters.
 
     Args:
         n (int): The target number of characters.
