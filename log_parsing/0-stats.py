@@ -24,7 +24,7 @@ valid_status_codes = set(status_counts.keys())
 
 
 def print_statistics():
-    """Affiche la taille totale et le nombre d'occurrences par code de statut."""
+    """Affiche la taille totale et les codes de statut."""
     print("File size: {}".format(total_file_size))
     for code in sorted(status_counts.keys()):
         if status_counts[code] > 0:
