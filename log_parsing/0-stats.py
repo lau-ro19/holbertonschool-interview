@@ -7,6 +7,7 @@ Prints statistics every 10 lines, upon keyboard interruption, and at the end.
 """
 
 import sys
+import re
 
 # Initialisation des variables globales pour les métriques
 total_file_size = 0
@@ -21,6 +22,10 @@ status_counts = {
     500: 0
 }
 valid_status_codes = set(status_counts.keys())
+
+# Regex pour capturer proprement le code de statut et la taille du fichier à la fin de la ligne
+# Format attendu à la fin : ... "HTTP/1.1" <status> <size>
+log_pattern = re.compile(r'.*"\s+(\d{3})\s+(\d+)\s*$')
 
 
 def print_statistics():
@@ -38,20 +43,18 @@ if __name__ == "__main__":
     try:
         for line in sys.stdin:
             line_count += 1
-            parts = line.split()
+            match = log_pattern.match(line.strip())
 
-            # Vérification basique du format (au moins 7 éléments)
-            if len(parts) >= 7:
+            if match:
                 try:
-                    file_size = int(parts[-1])
-                    status_code = int(parts[-2])
+                    status_code = int(match.group(1))
+                    file_size = int(match.group(2))
 
                     total_file_size += file_size
 
                     if status_code in valid_status_codes:
                         status_counts[status_code] += 1
                 except ValueError:
-                    # Ignore les lignes où le statut ou la taille ne sont pas des entiers
                     pass
 
             # Affichage toutes les 10 lignes
@@ -61,7 +64,7 @@ if __name__ == "__main__":
             else:
                 printed_at_end = False
 
-        # Affichage final à la fin de la lecture du flux (si non déjà affiché par un multiple de 10)
+        # Affichage final à la fin de la lecture du flux
         if not printed_at_end:
             print_statistics()
 
