@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+"""
+Log parsing module that reads stdin line by line and computes metrics:
+- Total file size
+- Number of lines by status code (200, 301, 400, 401, 403, 404, 405, 500)
+Prints statistics every 10 lines and upon keyboard interruption.
+"""
+
 import sys
 
 # Initialisation des variables globales pour les métriques
