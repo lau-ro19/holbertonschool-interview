@@ -33,6 +33,7 @@ def print_statistics():
 
 if __name__ == "__main__":
     line_count = 0
+    printed_at_end = False
 
     try:
         for line in sys.stdin:
@@ -56,10 +57,12 @@ if __name__ == "__main__":
             # Affichage toutes les 10 lignes
             if line_count % 10 == 0:
                 print_statistics()
+                printed_at_end = True
+            else:
+                printed_at_end = False
 
-        # Affichage final à la fin de la lecture du flux si le total n'est pas un multiple de 10
-        # (ou dans tous les cas si le validateur attend un affichage final)
-        if line_count % 10 != 0:
+        # Affichage final à la fin de la lecture du flux (si non déjà affiché par un multiple de 10)
+        if not printed_at_end:
             print_statistics()
 
     except KeyboardInterrupt:
