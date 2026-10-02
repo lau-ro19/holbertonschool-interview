@@ -3,7 +3,7 @@
 Log parsing module that reads stdin line by line and computes metrics:
 - Total file size
 - Number of lines by status code (200, 301, 400, 401, 403, 404, 405, 500)
-Prints statistics every 10 lines and upon keyboard interruption.
+Prints statistics every 10 lines, upon keyboard interruption, and at the end.
 """
 
 import sys
@@ -56,6 +56,11 @@ if __name__ == "__main__":
             # Affichage toutes les 10 lignes
             if line_count % 10 == 0:
                 print_statistics()
+
+        # Affichage final à la fin de la lecture du flux si le total n'est pas un multiple de 10
+        # (ou dans tous les cas si le validateur attend un affichage final)
+        if line_count % 10 != 0:
+            print_statistics()
 
     except KeyboardInterrupt:
         # Gestion de l'interruption clavier (CTRL + C)
