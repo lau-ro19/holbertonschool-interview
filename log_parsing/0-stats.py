@@ -2,12 +2,11 @@
 """
 Log parsing module that reads stdin line by line and computes metrics:
 - Total file size
-- Number of lines by status code (200, 301, 400, 401, 403, 404, 405, 500)
+- Number of status code occurrences
 Prints statistics every 10 lines, upon keyboard interruption, and at the end.
 """
 
 import sys
-import re
 
 # Initialisation des variables globales pour les métriques
 total_file_size = 0
@@ -22,10 +21,6 @@ status_counts = {
     500: 0
 }
 valid_status_codes = set(status_counts.keys())
-
-# Regex pour capturer proprement le code de statut et la taille du fichier à la fin de la ligne
-# Format attendu à la fin : ... "HTTP/1.1" <status> <size>
-log_pattern = re.compile(r'.*"\s+(\d{3})\s+(\d+)\s*$')
 
 
 def print_statistics():
@@ -43,18 +38,22 @@ if __name__ == "__main__":
     try:
         for line in sys.stdin:
             line_count += 1
-            match = log_pattern.match(line.strip())
+            parts = line.split()
 
-            if match:
+            # On a besoin d'au moins 2 éléments à la fin pour le statut et la taille
+            if len(parts) >= 2:
                 try:
-                    status_code = int(match.group(1))
-                    file_size = int(match.group(2))
+                    file_size = int(parts[-1])
+                    status_code = int(parts[-2])
 
+                    # On ajoute toujours la taille si ce sont des entiers valides
                     total_file_size += file_size
 
+                    # On incrémente le compteur si le code fait partie des codes suivis
                     if status_code in valid_status_codes:
                         status_counts[status_code] += 1
                 except ValueError:
+                    # Si les 2 derniers éléments ne sont pas des entiers, on ignore la ligne
                     pass
 
             # Affichage toutes les 10 lignes
